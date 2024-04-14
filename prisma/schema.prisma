@@ -1,0 +1,39 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  binaryTargets = ["linux-musl-arm64-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model Batches {
+  id Int @id @default(autoincrement())
+  model String
+  batch_date DateTime
+  quantity Int
+  license_level Int
+  batch_comment String?
+  numbers Numbers[]
+
+  @@index([id])
+  @@map("batches")
+}
+
+model Numbers {
+  id Int @id @default(autoincrement())
+  serial_number String @default(cuid())
+  batch Batches @relation(fields: [batch_id], references: [id])
+  batch_id Int
+
+  @@index([id])
+  @@map("machine_numbers")
+}
